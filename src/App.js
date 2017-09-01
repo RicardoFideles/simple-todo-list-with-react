@@ -13,6 +13,15 @@ class App extends Component {
     this.updateTask = this.updateTask.bind(this);
   }
 
+  componentWillMount() {
+    const toDoListItems = window.localStorage.getItem('toDoListItems') || '[]';
+    this.setState({ items : JSON.parse(toDoListItems)});
+  }
+
+  updateLocalStorage(items) {
+    window.localStorage.setItem('toDoListItems', JSON.stringify(items));
+  }
+
   addTask(e) {
     e.preventDefault();
     const value = e.target.querySelector('input').value;
@@ -24,6 +33,7 @@ class App extends Component {
         status : 'To Do'
       };
       items.push(newTask);
+      this.updateLocalStorage(items);
       return  { items }
     });
   }
@@ -34,6 +44,7 @@ class App extends Component {
       const s = items.filter(_ => _.id  !== task.id); //todas as tarefas menos a selecionada;
       task.status = target.checked ? 'Done' : 'To Do';
       s.push(task);
+      this.updateLocalStorage(s);
       return { items : s }
     });
   }
